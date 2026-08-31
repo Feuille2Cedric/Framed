@@ -4,7 +4,9 @@
 
 ### Six images. Six essais. Un seul film à retrouver.
 
-**Une adaptation locale du jeu de cinéma, avec 7 466 films issus du monde entier et de toutes les époques.**
+**Une adaptation locale du jeu de cinéma, avec 7 966 films issus du monde entier et de toutes les époques.**
+
+link : https://feuille2cedric.github.io/Framed/
 
 `100 % STATIQUE` · `SANS COMPTE` · `SANS TRAQUEUR` · `COMPATIBLE GITHUB PAGES`
 
@@ -59,7 +61,7 @@ Après la victoire ou la défaite, le titre et le nom du réalisateur sont rév�
 
 ## Le carnet des films
 
-Le carnet permet de parcourir les **7 466 films sans afficher leur titre avant la partie**.
+Le carnet permet de parcourir les **7 966 films sans afficher leur titre avant la partie**.
 
 Tu peux filtrer le catalogue par :
 
@@ -134,7 +136,7 @@ Chaque nouveau `git push` republiera automatiquement la dernière version.
 ├── index.html                   # Interface du jeu
 ├── styles.css                   # Direction artistique et responsive
 ├── app.js                       # Logique, navigation et statistiques
-├── movies.js                    # Catalogue généré de 7 466 films
+├── movies.js                    # Catalogue généré de 7 966 films
 └── README.md                    # Documentation
 ```
 
