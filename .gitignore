@@ -1,0 +1,26 @@
+# Données personnelles et exports
+letterboxd-*.zip
+ratings.csv
+watched.csv
+diary.csv
+reviews.csv
+watchlist.csv
+*.csv
+
+# Sources et caches de génération
+.catalog-*
+.*-source.json
+.*-frames.json
+.*-resolved.json
+.*-metadata.json
+__pycache__/
+
+# Ancienne page téléchargée
+Framed - The daily movie guessing game.html
+Framed - The daily movie guessing game_files/
+
+# Fichiers système et éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
