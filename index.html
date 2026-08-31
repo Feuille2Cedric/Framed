@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%23b91c1c'/%3E%3Cpath d='M15 13h36v9H25v7h22v9H25v13H15z' fill='white'/%3E%3C/svg%3E" />
+    <meta
+      name="description"
+      content="Devinez un film à partir de six révélations, avec un carnet local de 7 466 films du monde entier."
+    />
+    <title>Framed Local — Devinez le film</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="backdrop" id="backdrop" hidden></div>
+
+    <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Menu principal">
+      <div class="drawer__head">
+        <p>MENU</p>
+        <button class="icon-button" type="button" data-close aria-label="Fermer le menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+      <nav class="drawer__nav">
+        <button class="drawer-link" type="button" id="dailyButton">
+          <span class="drawer-link__icon">▣</span>
+          <span><strong>FILM DU JOUR</strong><small>Le même défi pour tout le monde</small></span>
+        </button>
+        <button class="drawer-link" type="button" id="randomButton">
+          <span class="drawer-link__icon">↝</span>
+          <span><strong>FILM ALÉATOIRE</strong><small>Piochez dans les 7 466 films</small></span>
+        </button>
+        <button class="drawer-link" type="button" data-open="catalogModal">
+          <span class="drawer-link__icon">☷</span>
+          <span><strong>CARNET DES FILMS</strong><small>Numéros, genres, pays et époques</small></span>
+        </button>
+        <button class="drawer-link" type="button" data-open="statsModal">
+          <span class="drawer-link__icon">⌁</span>
+          <span><strong>STATISTIQUES</strong><small>Vos parties sur cet appareil</small></span>
+        </button>
+        <button class="drawer-link" type="button" data-open="helpModal">
+          <span class="drawer-link__icon">?</span>
+          <span><strong>RÈGLES</strong><small>Comment jouer</small></span>
+        </button>
+      </nav>
+      <div class="drawer__foot">
+        <span class="status-dot"></span>
+        Application locale · zéro traqueur
+      </div>
+    </aside>
+
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="topbar__group">
+          <button class="brand" type="button" id="brandButton" aria-label="Revenir au film du jour">
+            Framed <span>LOCAL</span>
+          </button>
+          <span class="header-movie-count" id="headerMovieCount" aria-label="Nombre de films dans le jeu"></span>
+          <button class="icon-button" type="button" id="randomIcon" aria-label="Nouveau film aléatoire">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7h-3.2c-1.2 0-2.2.5-2.9 1.5L9.7 15c-.7 1-1.7 1.5-2.9 1.5H4M18 4l3 3-3 3M4 7.5h2.8c1.2 0 2.2.5 2.9 1.5l4.2 6.5c.7 1 1.7 1.5 2.9 1.5H20M18 14l3 3-3 3" /></svg>
+          </button>
+          <button class="icon-button" type="button" data-open="statsModal" aria-label="Voir les statistiques">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-7" /></svg>
+          </button>
+        </div>
+        <div class="topbar__group">
+          <button class="icon-button" type="button" data-open="helpModal" aria-label="Afficher les règles">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M9.8 9a2.3 2.3 0 0 1 4.5.7c0 1.7-2.3 2-2.3 3.7M12 17h.01" /></svg>
+          </button>
+          <button class="icon-button menu-button" type="button" id="menuButton" aria-label="Ouvrir le menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <span></span>
+          </button>
+        </div>
+      </header>
+
+      <div class="challenge-links" aria-label="Informations du jeu">
+        <div class="challenge-pill challenge-pill--green"><span>◉</span> 7 466 FILMS · MONDE ENTIER</div>
+        <button class="challenge-pill challenge-pill--red" type="button" id="catalogButton">
+          OUVRIR LE CARNET <span>→</span>
+        </button>
+      </div>
+
+      <main class="game-card">
+        <section class="frame-panel" aria-labelledby="challengeTitle">
+          <div class="frame-heading">
+            <button class="movie-step" type="button" id="previousMovie" aria-label="Film précédent">←</button>
+            <span class="frame-heading__title"><span id="challengeTitle">FRAMED LOCAL</span><span class="mode-tag" id="modeTag">DU JOUR</span></span>
+            <button class="movie-step" type="button" id="nextMovieHeader" aria-label="Film suivant">→</button>
+          </div>
+          <div class="frame-stage" id="frameStage">
+            <img id="movieFrame" alt="Image extraite du film à deviner" />
+            <div class="frame-loading" id="frameLoading">
+              <span class="loader"></span>
+              <p>Chargement de la frame…</p>
+            </div>
+            <div class="frame-error" id="frameError" hidden>
+              <span>IMAGE TEMPORAIREMENT INDISPONIBLE</span>
+              <p>Essayez une autre frame avec les boutons ci-dessous.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="frame-tabs" id="frameTabs" aria-label="Frames révélées"></div>
+
+        <div class="result-overlay" id="resultOverlay" hidden>
+          <div><p id="resultEyebrow">BIEN JOUÉ</p><h2 id="answerTitle"></h2></div>
+          <div class="result-actions">
+            <button type="button" class="button button--green" id="shareButton">PARTAGER</button>
+            <button type="button" class="button button--slate" id="nextButton">AUTRE FILM</button>
+          </div>
+        </div>
+
+        <div class="guess-history" id="guessHistory" aria-live="polite"></div>
+
+        <form class="guess-form" id="guessForm" autocomplete="off">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
+            <input
+              id="guessInput"
+              type="text"
+              placeholder="Cherchez un film ou validez pour passer"
+              aria-label="Votre proposition"
+              aria-autocomplete="list"
+              aria-controls="suggestions"
+              aria-expanded="false"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div class="suggestions" id="suggestions" role="listbox" hidden></div>
+          </div>
+          <button type="submit" class="submit-button" id="submitButton">VALIDER</button>
+        </form>
+
+        <div class="remaining"><span id="remainingCount">6</span> ESSAIS RESTANTS</div>
+      </main>
+
+      <footer class="footer">
+        <div><button type="button" data-open="helpModal">aide</button><span>·</span><button type="button" data-open="statsModal">stats</button></div>
+        <p><strong>FRAMED LOCAL</strong><span>7466 TITRES · 6 RÉVÉLATIONS</span></p>
+      </footer>
+
+      <p class="source-note">
+        Catalogue et métadonnées stockés localement · images chargées à la demande depuis leurs sources publiques.
+      </p>
+    </div>
+
+    <dialog class="modal" id="helpModal">
+      <div class="modal__head"><h2>COMMENT JOUER</h2><button class="icon-button" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button></div>
+      <div class="modal__body">
+        <p>Devinez le film à partir d’une image. Une nouvelle frame apparaît après chaque mauvaise réponse ou lorsque vous passez.</p>
+        <div class="rule"><span>1</span><p>Commencez à écrire puis choisissez un titre parmi les suggestions.</p></div>
+        <div class="rule"><span>2</span><p>Vous avez six essais et six images du film, ordonnées de la plus difficile à la plus reconnaissable.</p></div>
+        <div class="rule"><span>3</span><p>Ouvrez le carnet pour choisir directement un numéro parmi 7 466 films, puis naviguez avec les flèches.</p></div>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="statsModal">
+      <div class="modal__head"><h2>VOS STATISTIQUES</h2><button class="icon-button" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button></div>
+      <div class="modal__body">
+        <div class="stats-grid">
+          <div><strong id="statPlayed">0</strong><span>PARTIES</span></div>
+          <div><strong id="statWins">0</strong><span>VICTOIRES</span></div>
+          <div><strong id="statRate">0%</strong><span>RÉUSSITE</span></div>
+          <div><strong id="statStreak">0</strong><span>SÉRIE</span></div>
+        </div>
+        <p class="stats-note">Les statistiques sont enregistrées uniquement dans votre navigateur.</p>
+      </div>
+    </dialog>
+
+    <dialog class="modal modal--catalog" id="catalogModal">
+      <div class="modal__head">
+        <div><p class="modal__eyebrow">7 466 FILMS À PARCOURIR</p><h2>LE CARNET</h2></div>
+        <button class="icon-button" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
+      </div>
+      <div class="catalog-controls">
+        <form class="jump-form" id="jumpForm">
+          <label for="jumpInput">ALLER AU NUMÉRO</label>
+          <div><span>#</span><input id="jumpInput" type="number" min="1" max="7466" placeholder="7400" /><button type="submit">JOUER</button></div>
+        </form>
+        <div class="catalog-intro"><strong>CHOISISSEZ SANS SPOILER</strong><span>Les titres restent cachés jusqu’à la fin de la partie.</span></div>
+        <div class="catalog-filters">
+          <label>GENRE<select id="genreFilter"><option value="">Tous les genres</option></select></label>
+          <label>PAYS<select id="countryFilter"><option value="">Tous les pays</option></select></label>
+          <label>ÉPOQUE<select id="eraFilter"><option value="">Toutes les époques</option></select></label>
+          <label>MOUVEMENT<select id="movementFilter"><option value="">Tous les mouvements</option></select></label>
+        </div>
+      </div>
+      <div class="catalog-summary"><span id="catalogCount">7 466 films</span><button type="button" id="clearFilters">EFFACER LES FILTRES</button></div>
+      <div class="catalog-list" id="catalogList"></div>
+      <div class="catalog-pagination">
+        <button type="button" id="catalogPrevious">← PRÉCÉDENT</button>
+              <span id="catalogPage">PAGE 1 / 150</span>
+        <button type="button" id="catalogNext">SUIVANT →</button>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="movies.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
