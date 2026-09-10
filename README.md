@@ -2,7 +2,7 @@
 
 # 🎬 FRAMED LOCAL
 
-### Six images. Six essais. Un seul film à retrouver.
+### Six scènes ou une affiche floutée. Un seul film à retrouver.
 
 **Une adaptation locale du jeu de cinéma, avec 7 466 films issus du monde entier et de toutes les époques.**
 
@@ -14,22 +14,22 @@
 
 ## Le principe
 
-Une image extraite d’un film apparaît. Il faut retrouver le bon titre en six essais maximum.
+Choisis entre deux jeux : retrouver un film à partir de six scènes, ou reconnaître son affiche en quatre essais maximum.
 
-Chaque mauvaise proposition — ou chaque passage — révèle une nouvelle image. Les six images sont organisées de la plus difficile à la plus reconnaissable.
+Dans le jeu **Frames**, chaque mauvaise proposition révèle une nouvelle scène, de la plus difficile à la plus reconnaissable. Dans le jeu **Affiche**, le même visuel devient progressivement plus net.
 
-Après la victoire ou la défaite, le titre et le nom du réalisateur sont révélés. Les six images restent alors librement consultables.
+Après la victoire ou la défaite, le titre et le nom du réalisateur sont révélés. Les scènes débloquées restent consultables et l’affiche apparaît entièrement nette.
 
 ---
 
 ## Règles du jeu
 
-1. Observe la première image sans indice supplémentaire.
+1. Choisis **Frames** ou **Affiche** en haut de la page.
 2. Commence à saisir le titre d’un film dans le champ de recherche.
 3. Choisis le film dans les suggestions avec la souris ou les flèches du clavier.
 4. Valide ta proposition — ou valide un champ vide pour passer.
-5. Une mauvaise réponse débloque l’image suivante.
-6. Retrouve le film avant la fin des six essais.
+5. Une mauvaise réponse débloque la scène suivante ou réduit le flou.
+6. Retrouve le film en six essais dans Frames ou quatre essais dans Affiche.
 
 ### Saisie des réponses
 
@@ -40,7 +40,7 @@ Après la victoire ou la défaite, le titre et le nom du réalisateur sont rév�
 
 ### Après la partie
 
-- Les boutons `1` à `6` permettent de revoir toutes les images.
+- Les boutons numérotés permettent de revoir les scènes ou niveaux déjà débloqués.
 - La réponse prend la forme **Titre — Réalisateur**.
 - Le bouton **Autre film** lance le film suivant de la sélection active.
 - Le résultat peut être copié pour être partagé sans révéler la réponse.
@@ -51,6 +51,8 @@ Après la victoire ou la défaite, le titre et le nom du réalisateur sont rév�
 
 | Mode | Fonctionnement |
 |---|---|
+| **Frames** | Six scènes successives, de la plus difficile à la plus évidente. |
+| **Affiche** | Une affiche qui se défloute progressivement sur quatre essais. |
 | **Film du jour** | Le même film est proposé pendant toute la journée. |
 | **Film aléatoire** | Un film est choisi parmi l’ensemble du catalogue. |
 | **Carnet** | Choisis directement un numéro ou construis une sélection avec les filtres. |

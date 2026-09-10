@@ -7,7 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%23b91c1c'/%3E%3Cpath d='M15 13h36v9H25v7h22v9H25v13H15z' fill='white'/%3E%3C/svg%3E" />
     <meta
       name="description"
-      content="Devinez un film à partir de six révélations, avec un carnet local de 7 466 films du monde entier."
+      content="Deux jeux de cinéma : six images ou une affiche qui se dévoile, avec 7 466 films du monde entier."
     />
     <title>Framed Local — Devinez le film</title>
     <link rel="stylesheet" href="styles.css" />
@@ -75,6 +75,17 @@
         </div>
       </header>
 
+      <nav class="game-switch" aria-label="Mode de jeu">
+        <button class="game-switch__button is-active" type="button" id="framesGameButton" aria-pressed="true">
+          <span class="game-switch__icon" aria-hidden="true">▣</span>
+          <span><strong>FRAMES</strong><small>6 images</small></span>
+        </button>
+        <button class="game-switch__button" type="button" id="posterGameButton" aria-pressed="false">
+          <span class="game-switch__icon" aria-hidden="true">◫</span>
+          <span><strong>AFFICHE</strong><small>4 niveaux de flou</small></span>
+        </button>
+      </nav>
+
       <div class="challenge-links" aria-label="Informations du jeu">
         <div class="challenge-pill challenge-pill--green"><span>◉</span> 7 466 FILMS · MONDE ENTIER</div>
         <button class="challenge-pill challenge-pill--red" type="button" id="catalogButton">
@@ -97,7 +108,7 @@
             </div>
             <div class="frame-error" id="frameError" hidden>
               <span>IMAGE TEMPORAIREMENT INDISPONIBLE</span>
-              <p>Essayez une autre frame avec les boutons ci-dessous.</p>
+              <p id="frameErrorText">Essayez une autre frame avec les boutons ci-dessous.</p>
             </div>
           </div>
         </section>
@@ -149,10 +160,11 @@
     <dialog class="modal" id="helpModal">
       <div class="modal__head"><h2>COMMENT JOUER</h2><button class="icon-button" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button></div>
       <div class="modal__body">
-        <p>Devinez le film à partir d’une image. Une nouvelle frame apparaît après chaque mauvaise réponse ou lorsque vous passez.</p>
+        <p>Choisissez votre façon de jouer : reconnaître des scènes ou identifier une affiche qui devient progressivement nette.</p>
         <div class="rule"><span>1</span><p>Commencez à écrire puis choisissez un titre parmi les suggestions.</p></div>
-        <div class="rule"><span>2</span><p>Vous avez six essais et six images du film, ordonnées de la plus difficile à la plus reconnaissable.</p></div>
-        <div class="rule"><span>3</span><p>Ouvrez le carnet pour choisir directement un numéro parmi 7 466 films, puis naviguez avec les flèches.</p></div>
+        <div class="rule"><span>2</span><p><strong>Frames :</strong> six scènes, de la plus difficile à la plus reconnaissable.</p></div>
+        <div class="rule"><span>3</span><p><strong>Affiche :</strong> quatre essais ; le flou diminue après chaque erreur. L’affiche nette reste visible à la fin.</p></div>
+        <div class="rule"><span>4</span><p>Le carnet et ses filtres restent actifs quand vous passez au film précédent ou suivant.</p></div>
       </div>
     </dialog>
 
