@@ -16,7 +16,7 @@
 
 Choisis entre deux jeux : retrouver un film à partir de six scènes, ou reconnaître son affiche en quatre essais maximum.
 
-Dans le jeu **Frames**, chaque mauvaise proposition révèle une nouvelle scène, de la plus difficile à la plus reconnaissable. Dans le jeu **Affiche**, le même visuel devient progressivement plus net.
+Dans le jeu **Frames**, chaque mauvaise proposition révèle une nouvelle scène, de la plus difficile à la plus reconnaissable. Dans le jeu **Affiche**, l’affiche officielle du film devient progressivement plus nette. Aucune scène du film n’est utilisée dans ce mode.
 
 Après la victoire ou la défaite, le titre et le nom du réalisateur sont révélés. Les scènes débloquées restent consultables et l’affiche apparaît entièrement nette.
 

@@ -129,7 +129,7 @@
   }
 
   function posterUrl(movie) {
-    return movie.image || movie.frames?.at(-1) || frameUrl(movie, FRAME_GUESSES - 1);
+    return movie.imdbId ? `https://images.metahub.space/poster/medium/${movie.imdbId}/img` : "";
   }
 
   function applyPosterReveal() {
@@ -161,11 +161,6 @@
   });
 
   elements.movieFrame.addEventListener("error", () => {
-    if (state.gameType === "poster" && state.imageAttempt === 0 && state.movie.frames?.length) {
-      state.imageAttempt = 1;
-      elements.movieFrame.src = state.movie.frames.at(-1);
-      return;
-    }
     if (state.gameType === "frames" && state.movie.source === "framed" && state.imageAttempt === 0) {
       state.imageAttempt = 1;
       elements.movieFrame.src = frameUrl(state.movie, state.viewedFrame, true);
@@ -180,7 +175,7 @@
     elements.movieFrame.classList.remove("is-ready");
     elements.frameError.hidden = false;
     elements.frameErrorText.textContent = state.gameType === "poster"
-      ? "Cette affiche n’est pas disponible pour le moment. Passez à un autre film."
+      ? "L’affiche officielle n’est pas disponible pour le moment. Passez à un autre film."
       : "Essayez une autre frame avec les boutons ci-dessous.";
   });
 
