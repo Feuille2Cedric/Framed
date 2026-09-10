@@ -7,7 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%23b91c1c'/%3E%3Cpath d='M15 13h36v9H25v7h22v9H25v13H15z' fill='white'/%3E%3C/svg%3E" />
     <meta
       name="description"
-      content="Devinez un film à partir de six révélations, avec un carnet local de 7 966 films du monde entier."
+      content="Deux jeux de cinéma : six images ou une affiche qui se défloute, avec 7 761 films du monde entier."
     />
     <title>Framed Local — Devinez le film</title>
     <link rel="stylesheet" href="styles.css" />
@@ -29,7 +29,7 @@
         </button>
         <button class="drawer-link" type="button" id="randomButton">
           <span class="drawer-link__icon">↝</span>
-          <span><strong>FILM ALÉATOIRE</strong><small>Piochez dans les 7 966 films</small></span>
+          <span><strong>FILM ALÉATOIRE</strong><small>Piochez dans les 7 761 films</small></span>
         </button>
         <button class="drawer-link" type="button" data-open="catalogModal">
           <span class="drawer-link__icon">☷</span>
@@ -75,8 +75,17 @@
         </div>
       </header>
 
+      <div class="game-mode-switch" aria-label="Choisir le jeu">
+        <button class="game-mode-button game-mode-button--frames is-active" type="button" id="framesGameButton" aria-pressed="true">
+          <strong>6 IMAGES</strong><span>Une nouvelle scène à chaque essai</span>
+        </button>
+        <button class="game-mode-button game-mode-button--poster" type="button" id="posterGameButton" aria-pressed="false">
+          <strong>AFFICHE FLOUTÉE</strong><span>4 essais pour la reconnaître</span>
+        </button>
+      </div>
+
       <div class="challenge-links" aria-label="Informations du jeu">
-        <div class="challenge-pill challenge-pill--green"><span>◉</span> 7 966 FILMS · MONDE ENTIER</div>
+        <div class="challenge-pill challenge-pill--green"><span>◉</span> 7 761 FILMS · MONDE ENTIER</div>
         <button class="challenge-pill challenge-pill--red" type="button" id="catalogButton">
           OUVRIR LE CARNET <span>→</span>
         </button>
@@ -138,7 +147,7 @@
 
       <footer class="footer">
         <div><button type="button" data-open="helpModal">aide</button><span>·</span><button type="button" data-open="statsModal">stats</button></div>
-        <p><strong>FRAMED LOCAL</strong><span>7966 TITRES · 6 RÉVÉLATIONS</span></p>
+        <p><strong>FRAMED LOCAL</strong><span>7761 TITRES · 2 JEUX</span></p>
       </footer>
 
       <p class="source-note">
@@ -149,10 +158,11 @@
     <dialog class="modal" id="helpModal">
       <div class="modal__head"><h2>COMMENT JOUER</h2><button class="icon-button" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button></div>
       <div class="modal__body">
-        <p>Devinez le film à partir d’une image. Une nouvelle frame apparaît après chaque mauvaise réponse ou lorsque vous passez.</p>
+        <p>Choisissez entre le jeu classique à six images et le jeu de l’affiche qui se défloute progressivement.</p>
         <div class="rule"><span>1</span><p>Commencez à écrire puis choisissez un titre parmi les suggestions.</p></div>
-        <div class="rule"><span>2</span><p>Vous avez six essais et six images du film, ordonnées de la plus difficile à la plus reconnaissable.</p></div>
-        <div class="rule"><span>3</span><p>Ouvrez le carnet pour choisir directement un numéro parmi 7 966 films, puis naviguez avec les flèches.</p></div>
+        <div class="rule"><span>2</span><p><strong>6 IMAGES :</strong> une nouvelle scène apparaît après chaque erreur ou passage, de la plus difficile à la plus reconnaissable.</p></div>
+        <div class="rule"><span>3</span><p><strong>AFFICHE FLOUTÉE :</strong> vous avez quatre essais. L’affiche devient plus nette après chaque erreur et se révèle entièrement à la fin.</p></div>
+        <div class="rule"><span>4</span><p>Ouvrez le carnet pour choisir directement un numéro parmi 7 761 films, puis naviguez avec les flèches.</p></div>
       </div>
     </dialog>
 
@@ -171,13 +181,13 @@
 
     <dialog class="modal modal--catalog" id="catalogModal">
       <div class="modal__head">
-        <div><p class="modal__eyebrow">7 966 FILMS À PARCOURIR</p><h2>LE CARNET</h2></div>
+        <div><p class="modal__eyebrow">7 761 FILMS À PARCOURIR</p><h2>LE CARNET</h2></div>
         <button class="icon-button" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
       </div>
       <div class="catalog-controls">
         <form class="jump-form" id="jumpForm">
           <label for="jumpInput">ALLER AU NUMÉRO</label>
-          <div><span>#</span><input id="jumpInput" type="number" min="1" max="7966" placeholder="7400" /><button type="submit">JOUER</button></div>
+          <div><span>#</span><input id="jumpInput" type="number" min="1" max="7761" placeholder="7400" /><button type="submit">JOUER</button></div>
         </form>
         <div class="catalog-intro"><strong>CHOISISSEZ SANS SPOILER</strong><span>Les titres restent cachés jusqu’à la fin de la partie.</span></div>
         <div class="catalog-filters">
@@ -187,7 +197,7 @@
           <label>MOUVEMENT<select id="movementFilter"><option value="">Tous les mouvements</option></select></label>
         </div>
       </div>
-      <div class="catalog-summary"><span id="catalogCount">7 966 films</span><button type="button" id="clearFilters">EFFACER LES FILTRES</button></div>
+      <div class="catalog-summary"><span id="catalogCount">7 761 films</span><button type="button" id="clearFilters">EFFACER LES FILTRES</button></div>
       <div class="catalog-list" id="catalogList"></div>
       <div class="catalog-pagination">
         <button type="button" id="catalogPrevious">← PRÉCÉDENT</button>

@@ -2,9 +2,9 @@
 
 # 🎬 FRAMED LOCAL
 
-### Six images. Six essais. Un seul film à retrouver.
+### Six images ou une affiche floutée. Un seul film à retrouver.
 
-**Une adaptation locale du jeu de cinéma, avec 7 966 films issus du monde entier et de toutes les époques.**
+**Une adaptation locale du jeu de cinéma, avec 7 761 films issus du monde entier et de toutes les époques.**
 
 link : https://feuille2cedric.github.io/Framed/
 
@@ -14,24 +14,28 @@ link : https://feuille2cedric.github.io/Framed/
 
 ---
 
-## Le principe
+## Les deux jeux
 
-Une image extraite d’un film apparaît. Il faut retrouver le bon titre en six essais maximum.
+Choisis ton défi depuis les deux boutons placés au-dessus du jeu :
 
-Chaque mauvaise proposition — ou chaque passage — révèle une nouvelle image. Les six images sont organisées de la plus difficile à la plus reconnaissable.
+| Jeu | Principe | Essais |
+|---|---|---:|
+| **6 images** | Une nouvelle scène apparaît après chaque erreur, de la plus difficile à la plus reconnaissable. | 6 |
+| **Affiche floutée** | La même affiche devient progressivement plus nette après chaque erreur. | 4 |
 
-Après la victoire ou la défaite, le titre et le nom du réalisateur sont révélés. Les six images restent alors librement consultables.
+Après la victoire ou la défaite, le titre et le nom du réalisateur sont révélés. Les images débloquées restent consultables et l’affiche apparaît entièrement nette.
 
 ---
 
 ## Règles du jeu
 
-1. Observe la première image sans indice supplémentaire.
-2. Commence à saisir le titre d’un film dans le champ de recherche.
-3. Choisis le film dans les suggestions avec la souris ou les flèches du clavier.
-4. Valide ta proposition — ou valide un champ vide pour passer.
-5. Une mauvaise réponse débloque l’image suivante.
-6. Retrouve le film avant la fin des six essais.
+1. Choisis **6 images** ou **Affiche floutée**.
+2. Observe la première scène ou l’affiche très floutée.
+3. Commence à saisir le titre d’un film dans le champ de recherche.
+4. Choisis le film dans les suggestions avec la souris ou les flèches du clavier.
+5. Valide ta proposition — ou valide un champ vide pour passer.
+6. Une mauvaise réponse révèle la scène suivante ou réduit le flou de l’affiche.
+7. Retrouve le film avant la fin des six ou quatre essais selon le jeu choisi.
 
 ### Saisie des réponses
 
@@ -42,7 +46,7 @@ Après la victoire ou la défaite, le titre et le nom du réalisateur sont rév�
 
 ### Après la partie
 
-- Les boutons `1` à `6` permettent de revoir toutes les images.
+- Les boutons `1` à `6`, ou `1` à `4` pour l’affiche, permettent de revoir tous les niveaux débloqués.
 - La réponse prend la forme **Titre — Réalisateur**.
 - Le bouton **Autre film** lance le film suivant de la sélection active.
 - Le résultat peut être copié pour être partagé sans révéler la réponse.
@@ -61,7 +65,7 @@ Après la victoire ou la défaite, le titre et le nom du réalisateur sont rév�
 
 ## Le carnet des films
 
-Le carnet permet de parcourir les **7 966 films sans afficher leur titre avant la partie**.
+Le carnet permet de parcourir les **7 761 films sans afficher leur titre avant la partie**.
 
 Tu peux filtrer le catalogue par :
 
@@ -89,6 +93,8 @@ python -m http.server 8000
 Puis ouvre <http://localhost:8000>.
 
 Les statistiques sont conservées uniquement dans le stockage local du navigateur utilisé.
+
+Le type de jeu choisi est conservé dans l’URL avec `?jeu=affiche`, ce qui permet de partager directement le défi d’affiche.
 
 ---
 
@@ -136,7 +142,7 @@ Chaque nouveau `git push` republiera automatiquement la dernière version.
 ├── index.html                   # Interface du jeu
 ├── styles.css                   # Direction artistique et responsive
 ├── app.js                       # Logique, navigation et statistiques
-├── movies.js                    # Catalogue généré de 7 966 films
+├── movies.js                    # Catalogue généré de 7 761 films
 └── README.md                    # Documentation
 ```
 
@@ -154,7 +160,7 @@ Chaque nouveau `git push` republiera automatiquement la dernière version.
 
 ## Données et images
 
-Le catalogue local contient les titres, années, réalisateurs et informations nécessaires au jeu. Les images sont chargées à la demande depuis leurs sources distantes et nécessitent donc une connexion internet.
+Le catalogue local contient les titres, années, réalisateurs et informations nécessaires au jeu. Les photogrammes sont chargés depuis leurs sources publiques et les affiches depuis [MetaHub](https://www.metahub.space/), à la demande : une connexion internet reste nécessaire.
 
 Les affiches, photogrammes, titres et marques cités restent la propriété de leurs ayants droit respectifs. Ce projet est personnel, non commercial et réalisé à des fins ludiques autour du cinéma.
 

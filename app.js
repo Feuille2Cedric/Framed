@@ -1,7 +1,8 @@
 (() => {
   "use strict";
 
-  const MAX_GUESSES = 6;
+  const FRAME_GUESSES = 6;
+  const POSTER_GUESSES = 4;
   const DAY_MS = 86_400_000;
   const EPOCH = Date.UTC(2026, 0, 1);
   const FRAME_HOST = "https://framed.wtf";
@@ -28,6 +29,7 @@
     frameLoading: document.querySelector("#frameLoading"),
     frameStage: document.querySelector("#frameStage"),
     frameTabs: document.querySelector("#frameTabs"),
+    framesGameButton: document.querySelector("#framesGameButton"),
     guessForm: document.querySelector("#guessForm"),
     guessHistory: document.querySelector("#guessHistory"),
     guessInput: document.querySelector("#guessInput"),
@@ -35,6 +37,7 @@
     menuButton: document.querySelector("#menuButton"),
     modeTag: document.querySelector("#modeTag"),
     movieFrame: document.querySelector("#movieFrame"),
+    posterGameButton: document.querySelector("#posterGameButton"),
     remainingCount: document.querySelector("#remainingCount"),
     resultEyebrow: document.querySelector("#resultEyebrow"),
     resultOverlay: document.querySelector("#resultOverlay"),
@@ -53,6 +56,7 @@
   const state = {
     movie: null,
     mode: "daily",
+    gameType: "frames",
     currentFrame: 0,
     viewedFrame: 0,
     guesses: [],
@@ -64,6 +68,8 @@
     catalogPage: 0,
     navigationPool: null,
   };
+
+  const maxGuesses = () => state.gameType === "poster" ? POSTER_GUESSES : FRAME_GUESSES;
 
   const normalize = (value) => value
     .normalize("NFD")
@@ -97,25 +103,41 @@
   function getMovieFromUrl() {
     const params = new URLSearchParams(location.search);
     const requested = Number(params.get("film"));
+    const gameType = params.get("jeu") === "affiche" ? "poster" : "frames";
     if (Number.isInteger(requested) && requested >= 1 && requested <= MOVIES.length) {
-      return { movie: MOVIES[requested - 1], mode: "random" };
+      return { movie: MOVIES[requested - 1], mode: "random", gameType };
     }
-    return { movie: MOVIES[getDailyIndex()], mode: "daily" };
+    return { movie: MOVIES[getDailyIndex()], mode: "daily", gameType };
   }
 
   function setUrl(movie, mode) {
     const url = new URL(location.href);
     if (mode === "daily") url.searchParams.delete("film");
     else url.searchParams.set("film", movie.index);
+    if (state.gameType === "poster") url.searchParams.set("jeu", "affiche");
+    else url.searchParams.delete("jeu");
     history.replaceState(null, "", url);
   }
 
   function frameUrl(movie, frame, alternate = false) {
-    if (movie.frames?.length >= MAX_GUESSES) return movie.frames[frame];
+    if (movie.frames?.length >= FRAME_GUESSES) return movie.frames[frame];
     if (movie.source !== "framed") return movie.image;
     const preferred = movie.id < 33 ? ".jpg" : ".jpeg";
     const extension = alternate ? (preferred === ".jpg" ? ".jpeg" : ".jpg") : preferred;
     return `${FRAME_HOST}/images/${movie.id}/${String(frame + 1).padStart(3, "0")}${extension}`;
+  }
+
+  function posterUrl(movie) {
+    if (movie.poster) return movie.poster;
+    if (movie.imdbId) return `https://images.metahub.space/poster/medium/${movie.imdbId}/img`;
+    return movie.image || movie.frames?.at(-1) || frameUrl(movie, FRAME_GUESSES - 1);
+  }
+
+  function applyRevealEffect() {
+    const posterGame = state.gameType === "poster";
+    elements.frameStage.classList.toggle("is-poster-game", posterGame);
+    elements.frameStage.dataset.posterLevel = posterGame ? String(state.viewedFrame) : "0";
+    elements.frameStage.dataset.posterRevealed = String(posterGame && state.ended);
   }
 
   function loadFrame(frame) {
@@ -124,7 +146,8 @@
     elements.movieFrame.classList.remove("is-ready");
     elements.frameLoading.hidden = false;
     elements.frameError.hidden = true;
-    const source = frameUrl(state.movie, frame);
+    applyRevealEffect();
+    const source = state.gameType === "poster" ? posterUrl(state.movie) : frameUrl(state.movie, frame);
     if (elements.movieFrame.src === source && elements.movieFrame.complete && elements.movieFrame.naturalWidth) {
       elements.frameLoading.hidden = true;
       elements.movieFrame.classList.add("is-ready");
@@ -139,12 +162,22 @@
   });
 
   elements.movieFrame.addEventListener("error", () => {
-    if (state.movie.source === "framed" && state.imageAttempt === 0) {
+    if (state.gameType === "poster" && state.imageAttempt === 0 && state.movie.image && elements.movieFrame.src !== state.movie.image) {
+      state.imageAttempt = 1;
+      elements.movieFrame.src = state.movie.image;
+      return;
+    }
+    if (state.gameType === "poster" && state.imageAttempt <= 1 && state.movie.frames?.length) {
+      state.imageAttempt = 2;
+      elements.movieFrame.src = state.movie.frames.at(-1);
+      return;
+    }
+    if (state.gameType === "frames" && state.movie.source === "framed" && state.imageAttempt === 0) {
       state.imageAttempt = 1;
       elements.movieFrame.src = frameUrl(state.movie, state.viewedFrame, true);
       return;
     }
-    if (state.movie.source === "framed" && state.imageAttempt === 1 && state.movie.image) {
+    if (state.gameType === "frames" && state.movie.source === "framed" && state.imageAttempt === 1 && state.movie.image) {
       state.imageAttempt = 2;
       elements.movieFrame.src = state.movie.image;
       return;
@@ -156,7 +189,8 @@
 
   function renderTabs() {
     elements.frameTabs.replaceChildren();
-    for (let index = 0; index < MAX_GUESSES; index += 1) {
+    elements.frameTabs.setAttribute("aria-label", state.gameType === "poster" ? "Niveaux de netteté révélés" : "Frames révélées");
+    for (let index = 0; index < maxGuesses(); index += 1) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "frame-tab";
@@ -214,7 +248,7 @@
 
   function finish(won) {
     state.ended = true;
-    state.currentFrame = MAX_GUESSES - 1;
+    state.currentFrame = maxGuesses() - 1;
     elements.guessInput.disabled = true;
     elements.submitButton.disabled = true;
     elements.guessForm.hidden = true;
@@ -225,6 +259,7 @@
       : state.movie.title;
     elements.resultOverlay.classList.toggle("is-lost", !won);
     elements.resultOverlay.hidden = false;
+    applyRevealEffect();
     renderTabs();
     saveResult(won);
   }
@@ -263,7 +298,7 @@
     state.selectedMovie = null;
     closeSuggestions();
     renderHistory();
-    elements.remainingCount.textContent = Math.max(0, MAX_GUESSES - state.guesses.length);
+    elements.remainingCount.textContent = Math.max(0, maxGuesses() - state.guesses.length);
 
     if (correct) {
       state.currentFrame = Math.max(state.currentFrame, state.guesses.length - 1);
@@ -272,8 +307,8 @@
       return;
     }
 
-    if (state.guesses.length >= MAX_GUESSES) {
-      state.currentFrame = MAX_GUESSES - 1;
+    if (state.guesses.length >= maxGuesses()) {
+      state.currentFrame = maxGuesses() - 1;
       loadFrame(state.currentFrame);
       window.setTimeout(() => finish(false), 350);
       return;
@@ -378,23 +413,32 @@
     } else if (event.key === "Escape") closeSuggestions();
   }
 
-  function startGame(movie, mode) {
+  function startGame(movie, mode, gameType = state.gameType) {
     state.movie = movie;
     state.mode = mode;
+    state.gameType = gameType;
     state.currentFrame = 0;
     state.viewedFrame = 0;
     state.guesses = [];
     state.ended = false;
     state.selectedMovie = null;
-    elements.challengeTitle.textContent = mode === "daily" ? `FILM DU JOUR · #${movie.index}` : `CARNET · #${movie.index}`;
+    const posterGame = gameType === "poster";
+    elements.challengeTitle.textContent = mode === "daily"
+      ? `${posterGame ? "AFFICHE" : "FILM"} DU JOUR · #${movie.index}`
+      : `${posterGame ? "AFFICHE" : "CARNET"} · #${movie.index}`;
     elements.modeTag.textContent = mode === "daily" ? "DU JOUR" : "ARCHIVE";
+    elements.framesGameButton.classList.toggle("is-active", !posterGame);
+    elements.posterGameButton.classList.toggle("is-active", posterGame);
+    elements.framesGameButton.setAttribute("aria-pressed", String(!posterGame));
+    elements.posterGameButton.setAttribute("aria-pressed", String(posterGame));
+    elements.movieFrame.alt = posterGame ? "Affiche floutée du film à deviner" : "Image extraite du film à deviner";
     elements.resultOverlay.hidden = true;
     elements.resultOverlay.classList.remove("is-lost");
     elements.guessForm.hidden = false;
     elements.guessInput.disabled = false;
     elements.submitButton.disabled = false;
     elements.guessInput.value = "";
-    elements.remainingCount.textContent = MAX_GUESSES;
+    elements.remainingCount.textContent = maxGuesses();
     renderHistory();
     setUrl(movie, mode);
     loadFrame(0);
@@ -404,6 +448,11 @@
   function startDaily() {
     state.navigationPool = null;
     startGame(MOVIES[getDailyIndex()], "daily");
+  }
+
+  function switchGame(gameType) {
+    if (gameType === state.gameType) return;
+    startGame(state.movie, state.mode, gameType);
   }
 
   function startRandom() {
@@ -552,12 +601,14 @@
 
   async function shareResult() {
     const won = state.guesses.some((guess) => guess.correct);
-    const squares = Array.from({ length: MAX_GUESSES }, (_, index) => {
+    const limit = maxGuesses();
+    const squares = Array.from({ length: limit }, (_, index) => {
       if (index >= state.guesses.length) return "⬛";
       return state.guesses[index].correct ? "🟩" : "🟥";
     }).join("");
     const label = state.mode === "daily" ? `du jour #${state.movie.index}` : `archive #${state.movie.index}`;
-    const text = `Framed Local ${label}\n🎬 ${squares}\n${won ? `Trouvé en ${state.guesses.length}/6` : "Pas trouvé"}`;
+    const gameLabel = state.gameType === "poster" ? "Affiche Local" : "Framed Local";
+    const text = `${gameLabel} ${label}\n🎬 ${squares}\n${won ? `Trouvé en ${state.guesses.length}/${limit}` : "Pas trouvé"}`;
     try {
       await navigator.clipboard.writeText(text);
       showToast("Résultat copié !");
@@ -573,6 +624,8 @@
   elements.menuButton.addEventListener("click", openDrawer);
   elements.backdrop.addEventListener("click", closeDrawer);
   elements.shareButton.addEventListener("click", shareResult);
+  elements.framesGameButton.addEventListener("click", () => switchGame("frames"));
+  elements.posterGameButton.addEventListener("click", () => switchGame("poster"));
   document.querySelector("#nextButton").addEventListener("click", startAnother);
   document.querySelector("#randomButton").addEventListener("click", startRandom);
   document.querySelector("#randomIcon").addEventListener("click", startRandom);
@@ -610,13 +663,13 @@
   }));
   window.addEventListener("popstate", () => {
     const selection = getMovieFromUrl();
-    startGame(selection.movie, selection.mode);
+    startGame(selection.movie, selection.mode, selection.gameType);
   });
 
   initializeCatalog();
   elements.headerMovieCount.textContent = `${MOVIES.length.toLocaleString("fr-FR")} FILMS`;
   renderStats();
   const selection = getMovieFromUrl();
-  startGame(selection.movie, selection.mode);
+  startGame(selection.movie, selection.mode, selection.gameType);
   if (location.hash === "#catalog") openModal("catalogModal");
 })();

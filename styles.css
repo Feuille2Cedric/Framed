@@ -77,6 +77,37 @@ button { color: inherit; }
   white-space: nowrap;
 }
 
+.game-mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.game-mode-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  min-height: 46px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 7px 10px;
+  background: #111827;
+  color: #94a3b8;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, color .18s ease;
+}
+
+.game-mode-button strong { color: #e2e8f0; font-size: 11px; letter-spacing: .06em; }
+.game-mode-button span { overflow: hidden; max-width: 100%; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.game-mode-button:hover { border-color: #64748b; color: #cbd5e1; }
+.game-mode-button--frames.is-active { border-color: #059669; background: #065f46; color: #a7f3d0; }
+.game-mode-button--poster.is-active { border-color: #dc2626; background: #7f1d1d; color: #fecaca; }
+.game-mode-button.is-active strong { color: white; }
+
 .icon-button {
   position: relative;
   width: 29px;
@@ -129,6 +160,18 @@ button.challenge-pill { cursor: pointer; }
 
 .frame-stage > img { display: block; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity .24s ease; }
 .frame-stage > img.is-ready { opacity: 1; }
+
+.frame-stage.is-poster-game { height: clamp(360px, 72vw, 600px); }
+.frame-stage.is-poster-game > img {
+  object-fit: contain;
+  filter: blur(30px);
+  transform: scale(1.12);
+  transition: opacity .24s ease, filter .5s ease, transform .5s ease;
+}
+.frame-stage.is-poster-game[data-poster-level="1"] > img { filter: blur(19px); transform: scale(1.09); }
+.frame-stage.is-poster-game[data-poster-level="2"] > img { filter: blur(11px); transform: scale(1.06); }
+.frame-stage.is-poster-game[data-poster-level="3"] > img { filter: blur(4px); transform: scale(1.025); }
+.frame-stage.is-poster-game[data-poster-revealed="true"] > img { filter: blur(0); transform: scale(1); }
 
 .frame-loading, .frame-error {
   position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -283,10 +326,15 @@ button.challenge-pill { cursor: pointer; }
 
 @media (max-width: 540px) {
   .page-shell { width: min(100% - 12px, 728px); padding-top: 8px; }
+  .game-mode-switch { gap: 5px; }
+  .game-mode-button { min-height: 42px; padding: 6px 7px; }
+  .game-mode-button strong { font-size: 9px; }
+  .game-mode-button span { font-size: 7px; }
   .challenge-pill { min-height: 25px; padding: 3px 5px; font-size: 8px; letter-spacing: 0; }
   .game-card { padding: 6px; }
   .frame-heading { min-height: 24px; font-size: 10px; }
   .frame-heading { grid-template-columns: 32px 1fr 32px; }
+  .frame-stage.is-poster-game { height: min(126vw, 540px); }
   .frame-tabs { gap: 2px; }
   .frame-tab { height: 25px; }
   .guess-form input { font-size: 12px; }
