@@ -23,6 +23,8 @@
       page: document.querySelector("#catalogPage"),
       previous: document.querySelector("#catalogPrevious"),
     },
+    catalogEyebrow: document.querySelector("#catalogEyebrow"),
+    challengeCount: document.querySelector("#challengeCount"),
     challengeTitle: document.querySelector("#challengeTitle"),
     drawer: document.querySelector("#drawer"),
     frameError: document.querySelector("#frameError"),
@@ -95,20 +97,28 @@
     };
   });
 
-  function getDailyIndex() {
+  const moviesByImdbId = new Map(MOVIES.map((movie) => [movie.imdbId, movie]));
+  const posterMovies = POSTER_MOVIE_IDS.map((id) => moviesByImdbId.get(id)).filter(Boolean);
+  const posterMovieIds = new Set(posterMovies.map((movie) => movie.imdbId));
+  const moviesForGame = (gameType = state.gameType) => gameType === "poster" ? posterMovies : MOVIES;
+
+  function getDailyIndex(pool = moviesForGame()) {
     const now = new Date();
     const todayUtc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-    return ((Math.floor((todayUtc - EPOCH) / DAY_MS) % MOVIES.length) + MOVIES.length) % MOVIES.length;
+    return ((Math.floor((todayUtc - EPOCH) / DAY_MS) % pool.length) + pool.length) % pool.length;
   }
 
   function getMovieFromUrl() {
     const params = new URLSearchParams(location.search);
     const requested = Number(params.get("film"));
     const gameType = params.get("jeu") === "affiche" ? "poster" : "frames";
-    if (Number.isInteger(requested) && requested >= 1 && requested <= MOVIES.length) {
+    const requestedMovie = Number.isInteger(requested) ? MOVIES[requested - 1] : null;
+    const allowed = requestedMovie && (gameType === "frames" || posterMovieIds.has(requestedMovie.imdbId));
+    if (allowed) {
       return { movie: MOVIES[requested - 1], mode: "random", gameType };
     }
-    return { movie: MOVIES[getDailyIndex()], mode: "daily", gameType };
+    const pool = moviesForGame(gameType);
+    return { movie: pool[getDailyIndex(pool)], mode: "daily", gameType };
   }
 
   function setUrl(movie, mode) {
@@ -424,6 +434,10 @@
     elements.framesGameButton.setAttribute("aria-pressed", String(!posterGame));
     elements.posterGameButton.setAttribute("aria-pressed", String(posterGame));
     elements.movieFrame.alt = posterGame ? "Affiche floutée du film à deviner" : "Image extraite du film à deviner";
+    elements.headerMovieCount.textContent = posterGame ? `${posterMovies.length} AFFICHES` : `${MOVIES.length.toLocaleString("fr-FR")} FILMS`;
+    elements.challengeCount.innerHTML = posterGame
+      ? `<span>◉</span> ${posterMovies.length} FILMS INCONTOURNABLES`
+      : `<span>◉</span> ${MOVIES.length.toLocaleString("fr-FR")} FILMS · MONDE ENTIER`;
     elements.resultOverlay.hidden = true;
     elements.resultOverlay.classList.remove("is-lost");
     elements.guessForm.hidden = false;
@@ -438,23 +452,33 @@
   }
 
   function switchGame(gameType) {
-    if (gameType !== state.gameType) startGame(state.movie, state.mode, gameType);
+    if (gameType === state.gameType) return;
+    const pool = moviesForGame(gameType);
+    const currentMovie = pool.find((movie) => movie.imdbId === state.movie.imdbId);
+    const target = currentMovie || (state.mode === "daily"
+      ? pool[getDailyIndex(pool)]
+      : pool[Math.floor(Math.random() * pool.length)]);
+    state.navigationPool = null;
+    startGame(target, state.mode, gameType);
+    renderCatalog(true);
   }
 
   function startDaily() {
     state.navigationPool = null;
-    startGame(MOVIES[getDailyIndex()], "daily");
+    const pool = moviesForGame();
+    startGame(pool[getDailyIndex(pool)], "daily");
   }
 
   function startRandom() {
     state.navigationPool = null;
-    let movie = MOVIES[Math.floor(Math.random() * MOVIES.length)];
-    if (movie.index === state.movie?.index) movie = MOVIES[movie.index % MOVIES.length];
+    const pool = moviesForGame();
+    let movie = pool[Math.floor(Math.random() * pool.length)];
+    if (movie.index === state.movie?.index) movie = pool[(pool.indexOf(movie) + 1) % pool.length];
     startGame(movie, "random");
   }
 
   function startAdjacent(direction) {
-    const pool = state.navigationPool?.length ? state.navigationPool : MOVIES;
+    const pool = state.navigationPool?.length ? state.navigationPool : moviesForGame();
     const current = pool.findIndex((movie) => movie.index === state.movie.index);
     const position = current >= 0 ? current : 0;
     const nextIndex = (position + direction + pool.length) % pool.length;
@@ -489,7 +513,7 @@
     const country = elements.catalog.country.value;
     const era = elements.catalog.era.value;
     const movement = elements.catalog.movement.value;
-    return MOVIES.filter((movie) => {
+    return moviesForGame().filter((movie) => {
       return (!genre || movie.genres?.includes(genre))
         && (!country || movie.countries?.includes(country))
         && (!era || movie.era === era)
@@ -500,6 +524,9 @@
   function renderCatalog(resetPage = false) {
     if (resetPage) state.catalogPage = 0;
     const results = filteredCatalog();
+    elements.catalogEyebrow.textContent = state.gameType === "poster"
+      ? `${posterMovies.length} FILMS INCONTOURNABLES`
+      : `${MOVIES.length.toLocaleString("fr-FR")} FILMS À PARCOURIR`;
     const totalPages = Math.max(1, Math.ceil(results.length / CATALOG_PAGE_SIZE));
     state.catalogPage = Math.min(state.catalogPage, totalPages - 1);
     const start = state.catalogPage * CATALOG_PAGE_SIZE;
@@ -633,6 +660,10 @@
       showToast(`Choisissez un numéro entre 1 et ${MOVIES.length}`);
       return;
     }
+    if (state.gameType === "poster" && !posterMovieIds.has(MOVIES[number - 1].imdbId)) {
+      showToast("Ce film ne fait pas partie des 500 affiches incontournables");
+      return;
+    }
     state.navigationPool = null;
     document.querySelector("#catalogModal").close();
     startGame(MOVIES[number - 1], "random");
@@ -658,7 +689,6 @@
   });
 
   initializeCatalog();
-  elements.headerMovieCount.textContent = `${MOVIES.length.toLocaleString("fr-FR")} FILMS`;
   renderStats();
   const selection = getMovieFromUrl();
   startGame(selection.movie, selection.mode, selection.gameType);

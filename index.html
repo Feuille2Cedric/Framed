@@ -82,12 +82,12 @@
         </button>
         <button class="game-switch__button" type="button" id="posterGameButton" aria-pressed="false">
           <span class="game-switch__icon" aria-hidden="true">◫</span>
-          <span><strong>AFFICHE</strong><small>4 niveaux de flou</small></span>
+          <span><strong>AFFICHE</strong><small>500 films cultes · 4 essais</small></span>
         </button>
       </nav>
 
       <div class="challenge-links" aria-label="Informations du jeu">
-        <div class="challenge-pill challenge-pill--green"><span>◉</span> 7 466 FILMS · MONDE ENTIER</div>
+        <div class="challenge-pill challenge-pill--green" id="challengeCount"><span>◉</span> 7 466 FILMS · MONDE ENTIER</div>
         <button class="challenge-pill challenge-pill--red" type="button" id="catalogButton">
           OUVRIR LE CARNET <span>→</span>
         </button>
@@ -183,7 +183,7 @@
 
     <dialog class="modal modal--catalog" id="catalogModal">
       <div class="modal__head">
-        <div><p class="modal__eyebrow">7 466 FILMS À PARCOURIR</p><h2>LE CARNET</h2></div>
+        <div><p class="modal__eyebrow" id="catalogEyebrow">7 466 FILMS À PARCOURIR</p><h2>LE CARNET</h2></div>
         <button class="icon-button" type="button" data-close aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
       </div>
       <div class="catalog-controls">
@@ -211,6 +211,7 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script src="movies.js"></script>
+    <script src="poster-pool.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

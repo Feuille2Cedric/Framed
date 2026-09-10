@@ -14,7 +14,7 @@
 
 ## Le principe
 
-Choisis entre deux jeux : retrouver un film à partir de six scènes, ou reconnaître son affiche en quatre essais maximum.
+Choisis entre deux jeux : retrouver un film à partir de six scènes, ou reconnaître son affiche en quatre essais maximum parmi une sélection de 500 films incontournables.
 
 Dans le jeu **Frames**, chaque mauvaise proposition révèle une nouvelle scène, de la plus difficile à la plus reconnaissable. Dans le jeu **Affiche**, l’affiche officielle du film devient progressivement plus nette. Aucune scène du film n’est utilisée dans ce mode.
 
@@ -52,7 +52,7 @@ Après la victoire ou la défaite, le titre et le nom du réalisateur sont rév�
 | Mode | Fonctionnement |
 |---|---|
 | **Frames** | Six scènes successives, de la plus difficile à la plus évidente. |
-| **Affiche** | Une affiche qui se défloute progressivement sur quatre essais. |
+| **Affiche** | Une affiche qui se défloute progressivement sur quatre essais, parmi les 500 films du catalogue comptant le plus de votes IMDb. |
 | **Film du jour** | Le même film est proposé pendant toute la journée. |
 | **Film aléatoire** | Un film est choisi parmi l’ensemble du catalogue. |
 | **Carnet** | Choisis directement un numéro ou construis une sélection avec les filtres. |
